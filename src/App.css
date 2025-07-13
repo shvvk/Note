@@ -16,6 +16,27 @@
   height: 50px;
 }
 
+.noteButton{
+
+}
+
+.innerButton{
+  width: 20px;
+  text-align: center;
+  border: 1px outset;
+  float: right;
+  opacity: 0;
+}
+
+.noteButton:hover .innerButton{
+  opacity: 1;
+}
+
+.EmptyNote{
+  width: 80%;
+  padding: 2rem;
+}
+
 .Title{
   width: 100%;
 }
@@ -23,4 +44,5 @@
 .Data{
   width: 100%;
   height: 400px;
+
 }
