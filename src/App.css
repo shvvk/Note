@@ -1,8 +1,61 @@
 .AppContainer{
   width: 100%;
   display: flex;
+  position: fixed;
 }
 
+.modal-overlay{
+  position: fixed;
+  background-color: rgb(50, 57, 63);
+  z-index: 1000;
+  width: 512px;
+  height: 256px;
+  top: 25%;
+  left: 50%;
+  color: #DDDDDD;
+  transform: translate(-50%, -50%);
+  border-radius: 25px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.modal-title{
+  background-color: rgb(30, 35, 39);
+  height: 10%;
+  border-radius: 10px 10px 0px 0px;
+  text-align:center;
+}
+
+.modal-title button{
+  background-color: rgb(30, 35, 39);
+  color: #DDDDDD;
+  border: none;
+  float:right;
+  margin-right: 5px;
+}
+
+.modal-content{
+  height: 200px;
+  padding: 20px;
+  height: 60%;
+  text-align: center;
+  justify-content: center;
+  font-size: x-large;
+
+}
+
+.modal-options{
+  height: 30%;
+  float: right;
+  padding: 12px;
+}
+
+.modal-options button{
+  border: solid 2px;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 5px;
+  width: 100px;
+}
 .ListContainer{
   float: left;
   width: 20%;
@@ -16,20 +69,18 @@
   height: 50px;
 }
 
-.noteButton{
-
-}
-
 .innerButton{
   width: 20px;
   text-align: center;
-  border: 1px outset;
+  border-radius: 25%;
   float: right;
   opacity: 0;
+  color: white;
 }
 
 .noteButton:hover .innerButton{
   opacity: 1;
+  background-color: #ca2a2a;
 }
 
 .EmptyNote{
