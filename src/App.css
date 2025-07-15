@@ -19,24 +19,26 @@
 }
 
 .modal-title{
-  background-color: rgb(30, 35, 39);
-  height: 10%;
+  background-color: rgb(235, 130, 10);
+  height: 20%;
+  color: rgb(50, 57, 63);
   border-radius: 10px 10px 0px 0px;
   text-align:center;
 }
 
 .modal-title button{
-  background-color: rgb(30, 35, 39);
+  background-color: rgb(235, 130, 10);
   color: #DDDDDD;
   border: none;
   float:right;
+  color: rgb(50, 57, 63);
   margin-right: 5px;
+  height: 10px;
 }
 
 .modal-content{
-  height: 200px;
   padding: 20px;
-  height: 60%;
+  height: 50%;
   text-align: center;
   justify-content: center;
   font-size: x-large;
@@ -69,6 +71,16 @@
   height: 50px;
 }
 
+.NoteButtonSelected{
+  background-color: #999999;
+  border-right: solid 10px orange;
+}
+
+.NoteButtonSelected:hover .innerButton{
+  opacity: 1;
+  background-color: #ca2a2a;
+}
+
 .innerButton{
   width: 20px;
   text-align: center;
@@ -78,7 +90,7 @@
   color: white;
 }
 
-.noteButton:hover .innerButton{
+.NoteButton:hover .innerButton{
   opacity: 1;
   background-color: #ca2a2a;
 }

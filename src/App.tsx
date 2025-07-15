@@ -1,6 +1,5 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import './App.css'
-import { createPortal } from 'react-dom';
 
 type NoteType = {
   id: number,
@@ -20,26 +19,78 @@ type ModalProps = {
   item: NoteType | null;
 }
 
-function ConfirmModal({ onClose, onConfirm, item }: ModalProps) {
-  return createPortal(
+const MovablePopup = ({ onClose, onConfirm, item }: ModalProps) => {
+  const [position, setPosition] = useState({ x: 100, y: 100 });
+  const [isDragging, setIsDragging] = useState(false);
+  const offset = useRef({ x: 0, y: 0 });
+  
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    offset.current = {
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
+    };
+  };
+
+  const handleMouseMove = (e) => {
+    if (isDragging) {
+      setPosition({
+        x: e.clientX - offset.current.x,
+        y: e.clientY - offset.current.y
+      });
+
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    if(position.x < -100){
+      setPosition({x: -100, y: position.y})
+    }
+    if(position.y < -50){
+      setPosition({x: position.x, y: -50})
+    }
+  };
+
+  return (
     item != null ?
-    <div className="modal-overlay">
-      <div className="modal-title">
-        Delete note?
-        <button onClick={onClose}>X</button>
-      </div>
-      <div className="modal-content">
-        
-        Are you sure you want to delete {item.title}?
-      </div>
-      <div className="modal-options">
-        <button onClick={onClose}>Cancel</button>
-        <button onClick={() => onConfirm(item.id)}>Delete</button>
-      </div>
-    </div> : null,
-    document.getElementById('modal-root')!
+      
+      <div
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        style={{ width: '240px', height: '100vh', color: '#DDDDDD'}}
+      >
+        <div
+          onMouseDown={handleMouseDown}
+          style={{
+            
+            position: 'absolute',
+            top: position.y,
+            left: position.x,
+            width: '500px',
+            backgroundColor: 'rgb(30, 35, 39)',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+            cursor: 'move',
+            userSelect: 'none',
+          }}
+        >
+          <div className="modal-title">
+            Delete note?
+            <button onClick={onClose}>X</button>
+          </div>
+          <div className="modal-content">
+            Are you sure you want to delete {item.title}?
+          </div>
+          <div className="modal-options">
+            <button onClick={onClose}>Cancel</button>
+            <button onClick={() => onConfirm(item.id)}>Delete</button>
+          </div>
+        </div>
+      </div> : null
   );
-}
+};
 
 function Note({ note, updateTitle, updateData }: NoteProps) {
 
@@ -127,7 +178,10 @@ function NoteList() {
               <button
                 key={note.id}
                 type="button"
-                className="noteButton list-group-item list-group-item-action"
+                className={currentId === note.id ?
+                  "NoteButtonSelected list-group-item list-group-item-action" :
+                  "NoteButton list-group-item list-group-item-action"
+                } 
                 onClick={() => handleNoteChange(note.id)}
               >
                 {note.title}
@@ -157,7 +211,7 @@ function NoteList() {
         />
       </div>
       {showConfirm && (
-        <ConfirmModal onClose={handleClose} onConfirm={removeNote} item={deleteId} />
+        <MovablePopup onClose={handleClose} onConfirm={removeNote} item={deleteId} />
       )}
     </>
 
@@ -167,7 +221,10 @@ function NoteList() {
 function App() {
 
   return (
-    <NoteList />
+    <>
+
+      <NoteList />
+    </>
   )
 }
 
