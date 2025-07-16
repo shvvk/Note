@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import './App.css'
+import { motion, AnimatePresence } from "motion/react"
 
 type NoteType = {
   id: number,
@@ -55,8 +56,11 @@ const MovablePopup = ({ onClose, onConfirm, item }: ModalProps) => {
 
   return (
     item != null ?
-      
-      <div
+      <motion.div
+        initial={{opacity:0}}
+        animate={{opacity:1}}
+        exit={{opacity:0}}
+        transition={{duration: 0.1, ease: "easeInOut"}}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
@@ -87,7 +91,8 @@ const MovablePopup = ({ onClose, onConfirm, item }: ModalProps) => {
             <button onClick={() => onConfirm(item.id)}>Delete</button>
           </div>
         </div>
-      </div> : null
+      </motion.div> : null
+      
   );
 };
 
@@ -211,36 +216,51 @@ function NoteList() {
       <div className='AppContainer'>
         <div className='ListContainer'>
           <h2 onClick={()=>setCurrentId(0)}>Notes</h2>
-          <div className="list-group" ref={listRef}>
-            {notes.map(note => (
-              <button
-                key={note.id}
-                type="button"
-                className={currentId === note.id ?
-                  "NoteButtonSelected" :
-                  "NoteButton"
-                } 
-                onClick={() => handleNoteChange(note.id)}
-              >
-                {note.title}
-                <span
-                  className='innerButton'
-                  onClick={(e) => {
-                    e.stopPropagation(); confirmDelete(note)
-                  }
-                  }> X
-                </span>
-              </button>
-            ))}
+          
+          <motion.div layout initial={false} className="list-group" ref={listRef}>
+            <AnimatePresence>
+              {notes.map(note => (
+                <motion.div
+                  layout
+                  key={note.id}
+                  variants={{
+                    hidden: { opacity: 0, x: -100},
+                    animate: { opacity: 1, x: 0},
+                  }}
+                  initial="hidden"
+                  animate="animate"
+                  exit={{ opacity: 0}}
+                  transition={{duration: 0.3,delay: 0.1, ease: "easeInOut"}}
+                  
+                  className={currentId === note.id ?
+                    "NoteButtonSelected" :
+                    "NoteButton"
+                  } 
+                  onClick={() => handleNoteChange(note.id)}
+                >
+                  {note.title}
+                  <span
+                    className='innerButton'
+                    onClick={(e) => {
+                      e.stopPropagation(); confirmDelete(note)
+                    }
+                    }> X
+                  </span>
 
-            <button
+                </motion.div>
+              ))}
+              </AnimatePresence>
+              <motion.button
+              layout
               type="button"
               className="NoteButton"
               onClick={addNote}
             >
               + Add a new note +
-            </button>
-          </div>
+            </motion.button>
+              
+          </motion.div>
+          
         </div>
         <Note
           note={current}

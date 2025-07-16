@@ -75,7 +75,6 @@
   border-right: solid #202020 2px;
   padding: 10px;
   background-color: var(--sidebar-bg);
-  gap: 10px;
   overflow-y: auto;
   height: auto;
 }
@@ -106,7 +105,6 @@
   padding: 10px;
   border-radius: 6px;
   cursor: pointer;
-  transition: 0.3s;
   border-bottom: solid 1px;
   background-color: #303035;
   color: var(--text-color);
