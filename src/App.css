@@ -49,11 +49,15 @@
 .modal-content{
   padding: 20px;
   height: 50%;
+  display:flex;
   text-align: center;
   justify-content: center;
   font-size: x-large;
   background-color: var(--note-bg);
+}
 
+.modal-content input{
+  width: 25px;
 }
 
 .modal-options{
@@ -109,6 +113,7 @@
   background-color: #303035;
   color: var(--text-color);
   border-right: #303035 solid 4px;
+  transition: background-color 0.2s ease;
 }
 
 .NoteButton:hover{
@@ -123,7 +128,7 @@
   background-color: #505050;
   color: #FFFFFF;
   border-right: #DDDDDD solid 4px;
-  
+  transition: background-color 0.2s ease;
 }
 
 .NoteButtonSelected:hover .innerButton{

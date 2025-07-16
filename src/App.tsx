@@ -19,9 +19,17 @@ type ModalProps = {
   onClose: () => void;
   onConfirm: (id: number | null) => void;
   item: NoteType | null;
+  ask: boolean;
+  toggleAsk: () => void;
 }
 
-const MovablePopup = ({ onClose, onConfirm, item }: ModalProps) => {
+type SettingProps = {
+  onClose: () => void;
+  ask: boolean;
+  toggleAsk: () => void;
+}
+
+const MovablePopup = ({ onClose, onConfirm, item, ask, toggleAsk }: ModalProps) => {
   const [position, setPosition] = useState({ x: 600, y: 300 });
   const [isDragging, setIsDragging] = useState(false);
   const offset = useRef({ x: 0, y: 0 });
@@ -85,6 +93,10 @@ const MovablePopup = ({ onClose, onConfirm, item }: ModalProps) => {
           </div>
           <div className="modal-content">
             Are you sure you want to delete {item.title}?
+            <label>
+              <input id="ask" checked={ask} onChange={toggleAsk} type="checkbox"/>
+              Don't ask again
+            </label>
           </div>
           <div className="modal-options">
             <button onClick={onClose}>Cancel</button>
@@ -93,6 +105,80 @@ const MovablePopup = ({ onClose, onConfirm, item }: ModalProps) => {
         </div>
       </motion.div> : null
       
+  );
+};
+
+const Settings = ({ onClose, ask, toggleAsk }: SettingProps) => {
+  const [position, setPosition] = useState({ x: 600, y: 300 });
+  const [isDragging, setIsDragging] = useState(false);
+  const offset = useRef({ x: 0, y: 0 });
+  
+  const handleMouseDown = (e: { clientX: number; clientY: number; }) => {
+    setIsDragging(true);
+    offset.current = {
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
+    };
+  };
+
+  const handleMouseMove = (e: { clientX: number; clientY: number; }) => {
+    if (isDragging) {
+      setPosition({
+        x: e.clientX - offset.current.x,
+        y: e.clientY - offset.current.y
+      });
+
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    if(position.x < 0){
+      setPosition({x: 0, y: position.y})
+    }
+    if(position.y < 0){
+      setPosition({x: position.x, y: 0})
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{opacity:0}}
+      animate={{opacity:1}}
+      exit={{opacity:0}}
+      transition={{duration: 0.1, ease: "easeInOut"}}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      style={{ width: '240px', height: '500px', color: '#DDDDDD'}}
+    >
+      <div
+      className="modal-overlay"
+        onMouseDown={handleMouseDown}
+        style={{
+          
+          position: 'absolute',
+          top: position.y,
+          left: position.x,
+          width: '500px',
+          cursor: 'move',
+          userSelect: 'none',
+        }}
+      >
+        <div className="modal-title">
+          <p style={{float:'left', margin: "0px 0px 0px 15px", color: '#2a2a3a'}}>⚙</p>
+          Settings
+          <button onClick={onClose}>X</button>
+        </div>
+        <div className="modal-content">
+          <label>
+              <input id="ask" checked={ask} onChange={toggleAsk} type="checkbox"/>
+              Don't ask when deleting a note
+          </label>
+        </div>
+      </div>
+    </motion.div>
+    
   );
 };
 
@@ -122,7 +208,20 @@ function Note({ note, updateTitle, updateData, sample }: NoteProps) {
   );
 }
 
+function Clock() {
+  const [time, setTime] = useState(new Date());
 
+  useEffect(() => {
+    const interval = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div style={{marginLeft:"auto", marginRight: "10px"}}>
+      {time.toLocaleTimeString('en-GB')} {/* HH:MM:SS format */}
+    </div>
+  );
+}
 
 function NoteList() {
   const [notes, setNotes] = useState<NoteType[]>(() => {
@@ -136,10 +235,24 @@ function NoteList() {
 
   useEffect(() => {
     localStorage.setItem("notes", JSON.stringify(notes));
+
   }, [notes]);
 
-  const [currentId, setCurrentId] = useState<number>(0);
+  useEffect(() => {
+    localStorage.setItem("ask", JSON.stringify(ask));
 
+  }, );
+
+  const [currentId, setCurrentId] = useState<number>(0);
+  const [ask, setAsk] = useState<boolean>(() => {
+    const saved = localStorage.getItem("ask");
+    if(saved != undefined){
+    const value = JSON.parse(saved)
+    return value;
+    }
+    else{false}
+  });
+  const [showSettings, setShowSettings] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleteId, setDeteleId] = useState<NoteType | null>(null)
 
@@ -206,15 +319,27 @@ function NoteList() {
     setShowConfirm(true);
   }
 
+  const toggleAsk = () => {
+    setAsk(!ask)
+  }
+
   const handleClose = () => {
     setDeteleId(null);
     setShowConfirm(false);
+  }
+
+  const closeSettings = () => {
+    setShowSettings(false);
   }
 
   return (
     <>
       <div className='AppContainer'>
         <div className='ListContainer'>
+          <div style={{fontSize:'24px', display:"flex"}}>
+            <div style={{cursor:'pointer', width: "36px"}} onClick={()=>setShowSettings(true)}>⚙</div>
+            <Clock/>
+          </div>
           <h2 onClick={()=>setCurrentId(0)}>Notes</h2>
           
           <motion.div layout initial={false} className="list-group" ref={listRef}>
@@ -230,7 +355,7 @@ function NoteList() {
                   initial="hidden"
                   animate="animate"
                   exit={{ opacity: 0}}
-                  transition={{duration: 0.3,delay: 0.1, ease: "easeInOut"}}
+                  transition={{duration: 0.2, ease: "easeInOut"}}
                   
                   className={currentId === note.id ?
                     "NoteButtonSelected" :
@@ -242,23 +367,24 @@ function NoteList() {
                   <span
                     className='innerButton'
                     onClick={(e) => {
-                      e.stopPropagation(); confirmDelete(note)
+                      e.stopPropagation(); ask ? removeNote(note.id) : confirmDelete(note)
                     }
                     }> X
                   </span>
 
                 </motion.div>
               ))}
-              </AnimatePresence>
+              
               <motion.button
               layout
               type="button"
               className="NoteButton"
+              transition={{duration: 0.2, ease: "easeInOut"}}
               onClick={addNote}
             >
               + Add a new note +
             </motion.button>
-              
+            </AnimatePresence>
           </motion.div>
           
         </div>
@@ -270,7 +396,10 @@ function NoteList() {
         />
       </div>
       {showConfirm && (
-        <MovablePopup onClose={handleClose} onConfirm={removeNote} item={deleteId} />
+        <MovablePopup onClose={handleClose} onConfirm={removeNote} item={deleteId} ask={ask} toggleAsk={toggleAsk} />
+      )}
+      {showSettings&&(
+        <Settings onClose={closeSettings} ask={ask} toggleAsk={toggleAsk} />
       )}
     </>
 
@@ -280,10 +409,7 @@ function NoteList() {
 function App() {
 
   return (
-    <>
-
-      <NoteList />
-    </>
+    <NoteList />
   )
 }
 
