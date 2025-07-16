@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import './App.css'
 
 type NoteType = {
@@ -11,6 +11,7 @@ type NoteProps = {
   note: NoteType
   updateTitle: (id: number, newTitle: string) => void;
   updateData: (id: number, newData: string) => void;
+  sample: () => void;
 }
 
 type ModalProps = {
@@ -20,11 +21,11 @@ type ModalProps = {
 }
 
 const MovablePopup = ({ onClose, onConfirm, item }: ModalProps) => {
-  const [position, setPosition] = useState({ x: 100, y: 100 });
+  const [position, setPosition] = useState({ x: 600, y: 300 });
   const [isDragging, setIsDragging] = useState(false);
   const offset = useRef({ x: 0, y: 0 });
   
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: { clientX: number; clientY: number; }) => {
     setIsDragging(true);
     offset.current = {
       x: e.clientX - position.x,
@@ -32,7 +33,7 @@ const MovablePopup = ({ onClose, onConfirm, item }: ModalProps) => {
     };
   };
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: { clientX: number; clientY: number; }) => {
     if (isDragging) {
       setPosition({
         x: e.clientX - offset.current.x,
@@ -44,11 +45,11 @@ const MovablePopup = ({ onClose, onConfirm, item }: ModalProps) => {
 
   const handleMouseUp = () => {
     setIsDragging(false);
-    if(position.x < -100){
-      setPosition({x: -100, y: position.y})
+    if(position.x < 0){
+      setPosition({x: 0, y: position.y})
     }
-    if(position.y < -50){
-      setPosition({x: position.x, y: -50})
+    if(position.y < 0){
+      setPosition({x: position.x, y: 0})
     }
   };
 
@@ -62,6 +63,7 @@ const MovablePopup = ({ onClose, onConfirm, item }: ModalProps) => {
         style={{ width: '240px', height: '100vh', color: '#DDDDDD'}}
       >
         <div
+        className="modal-overlay"
           onMouseDown={handleMouseDown}
           style={{
             
@@ -69,9 +71,6 @@ const MovablePopup = ({ onClose, onConfirm, item }: ModalProps) => {
             top: position.y,
             left: position.x,
             width: '500px',
-            backgroundColor: 'rgb(30, 35, 39)',
-            borderRadius: '10px',
-            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
             cursor: 'move',
             userSelect: 'none',
           }}
@@ -92,38 +91,54 @@ const MovablePopup = ({ onClose, onConfirm, item }: ModalProps) => {
   );
 };
 
-function Note({ note, updateTitle, updateData }: NoteProps) {
+function Note({ note, updateTitle, updateData, sample }: NoteProps) {
 
   return (
-    !note ?
+    <div className="NoteContainer">
+    {!note ?
       <div className="EmptyNote">
         <h1>No notes open!</h1>
         <h2>Open an exisiting note or make a new one by pressing Add a new note button</h2>
+        <button onClick={sample}>Press here to add example notes</button>
       </div>
       :
-      <div className="NoteContainer">
-        <textarea
-          className='Title'
-          onChange={(e) => updateTitle(note.id, e.target.value)}
-          value={note.title} />
-        <textarea
-          className='Data'
-          onChange={(e) => updateData(note.id, e.target.value)}
-          value={note.data} />
+        <>
+          <textarea
+            className='Title'
+            onChange={(e) => updateTitle(note.id, e.target.value)}
+            value={note.title} />
+          <textarea
+            className='Data'
+            onChange={(e) => updateData(note.id, e.target.value)}
+            value={note.data} />
+        </>
+          }
       </div>
   );
 }
 
+
+
 function NoteList() {
-  const [notes, setNotes] = useState<NoteType[]>([
-    { id: Date.now(), title: 'Note 1', data: 'this is some sample text for note 1' },
-    { id: Date.now() + 1, title: 'Note 2', data: 'Here is some more text in the note 2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur faucibus massa volutpat aliquam iaculis. Praesent ac sem tellus. Proin in porta justo, porttitor porttitor metus. Phasellus luctus erat ac lectus eleifend mollis. Etiam orci tortor, lobortis ut convallis nec, mattis ut purus. Nam venenatis augue dolor, quis tristique dolor dignissim in. Cras rutrum interdum urna non sollicitudin. Nulla nec hendrerit sapien. Nulla sit amet mi eu leo rhoncus porta. Aenean mi sem, porta quis libero et, tempor viverra ipsum. Cras posuere dolor at nunc gravida, dictum varius magna interdum. ' }
-  ]);
+  const [notes, setNotes] = useState<NoteType[]>(() => {
+    const saved = localStorage.getItem("notes");
+    if(saved){
+    const value = JSON.parse(saved)
+    return value;
+    }
+    else{return []}
+  });
+
+  useEffect(() => {
+    localStorage.setItem("notes", JSON.stringify(notes));
+  }, [notes]);
 
   const [currentId, setCurrentId] = useState<number>(0);
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleteId, setDeteleId] = useState<NoteType | null>(null)
+
+  const listRef = useRef<HTMLDivElement | null>(null); // nie dziala
 
   const current = notes.find(n => n.id === currentId)!;
 
@@ -131,7 +146,30 @@ function NoteList() {
     setCurrentId(id)
   }
 
+
+  const scrollToBottom = () => {
+    const el = listRef.current;
+    if (el) {
+      el.scrollTop = el.scrollHeight;
+    }
+  };
+
+  const handleSampleNotes = () =>{
+    const newNote = {
+      id: Date.now(),
+      title: 'Example note 1',
+      data: 'this is some sample text for note 1',
+    };
+    const newNote2 = {
+      id: Date.now()+1,
+      title: 'Example note 2',
+      data: 'Here is some more text in the note 2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur faucibus massa volutpat aliquam iaculis. Praesent ac sem tellus. Proin in porta justo, porttitor porttitor metus. Phasellus luctus erat ac lectus eleifend mollis. Etiam orci tortor, lobortis ut convallis nec, mattis ut purus. Nam venenatis augue dolor, quis tristique dolor dignissim in. Cras rutrum interdum urna non sollicitudin. Nulla nec hendrerit sapien. Nulla sit amet mi eu leo rhoncus porta. Aenean mi sem, porta quis libero et, tempor viverra ipsum. Cras posuere dolor at nunc gravida, dictum varius magna interdum. ',
+    };
+    setNotes([...notes, newNote, newNote2]);
+  }
+
   const addNote = () => {
+    scrollToBottom()
     const newNote = {
       id: Date.now(),
       title: 'New note',
@@ -172,15 +210,15 @@ function NoteList() {
     <>
       <div className='AppContainer'>
         <div className='ListContainer'>
-          <h2>Notes</h2>
-          <div className="list-group">
+          <h2 onClick={()=>setCurrentId(0)}>Notes</h2>
+          <div className="list-group" ref={listRef}>
             {notes.map(note => (
               <button
                 key={note.id}
                 type="button"
                 className={currentId === note.id ?
-                  "NoteButtonSelected list-group-item list-group-item-action" :
-                  "NoteButton list-group-item list-group-item-action"
+                  "NoteButtonSelected" :
+                  "NoteButton"
                 } 
                 onClick={() => handleNoteChange(note.id)}
               >
@@ -197,7 +235,7 @@ function NoteList() {
 
             <button
               type="button"
-              className="list-group-item list-group-item-action"
+              className="NoteButton"
               onClick={addNote}
             >
               + Add a new note +
@@ -208,6 +246,7 @@ function NoteList() {
           note={current}
           updateTitle={updateTitle}
           updateData={updateData}
+          sample={handleSampleNotes}
         />
       </div>
       {showConfirm && (

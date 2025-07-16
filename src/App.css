@@ -1,38 +1,48 @@
+:root {
+  --bg-color: #1e1e2f;
+  --sidebar-bg: #2c2c3e;
+  --text-color: #DDDDDD;
+  --accent-color: #ff8800;
+  --note-bg: #2a2a3a;
+  --note-active-bg: #3a3a5a;
+}
+
 .AppContainer{
   width: 100%;
+  height: 100%;
   display: flex;
   position: fixed;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 .modal-overlay{
   position: fixed;
-  background-color: rgb(50, 57, 63);
+  background-color: var(--note-bg);
   z-index: 1000;
   width: 512px;
-  height: 256px;
   top: 25%;
   left: 50%;
-  color: #DDDDDD;
   transform: translate(-50%, -50%);
   border-radius: 25px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
 }
 
 .modal-title{
-  background-color: rgb(235, 130, 10);
+  background-color: #DDDDDD;
   height: 20%;
   color: rgb(50, 57, 63);
-  border-radius: 10px 10px 0px 0px;
+  border-radius: 25px 25px 0px 0px;
   text-align:center;
 }
 
 .modal-title button{
-  background-color: rgb(235, 130, 10);
-  color: #DDDDDD;
+  background-color: #DDDDDD;
   border: none;
   float:right;
   color: rgb(50, 57, 63);
-  margin-right: 5px;
+  border-radius: 25px;
+  margin-right: 20px;
   height: 10px;
 }
 
@@ -42,6 +52,7 @@
   text-align: center;
   justify-content: center;
   font-size: x-large;
+  background-color: var(--note-bg);
 
 }
 
@@ -58,9 +69,26 @@
   padding: 5px;
   width: 100px;
 }
+
 .ListContainer{
-  float: left;
   width: 20%;
+  border-right: solid #202020 2px;
+  padding: 10px;
+  background-color: var(--sidebar-bg);
+  gap: 10px;
+  overflow-y: auto;
+  height: auto;
+}
+
+.ListContainer h2{
+  padding:5px;
+  text-align: center;
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.ListContainer h2:hover{
+  cursor:pointer;
 }
 
 .NoteContainer{
@@ -71,14 +99,39 @@
   height: 50px;
 }
 
+.NoteButton{
+  height:40px;
+  background-color: transparent;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-bottom: solid 1px;
+  background-color: #303035;
+  color: var(--text-color);
+  border-right: #303035 solid 4px;
+}
+
+.NoteButton:hover{
+  background-color: var(--note-active-bg);
+}
+
 .NoteButtonSelected{
-  background-color: #999999;
-  border-right: solid 10px orange;
+  height:40px;
+  border: none;
+  padding: 10px;
+  border-bottom: solid 1px;
+  background-color: #505050;
+  color: #FFFFFF;
+  border-right: #DDDDDD solid 4px;
+  
 }
 
 .NoteButtonSelected:hover .innerButton{
   opacity: 1;
   background-color: #ca2a2a;
+  margin-right: 0px;
 }
 
 .innerButton{
@@ -87,7 +140,6 @@
   border-radius: 25%;
   float: right;
   opacity: 0;
-  color: white;
 }
 
 .NoteButton:hover .innerButton{
@@ -108,4 +160,34 @@
   width: 100%;
   height: 400px;
 
+}
+
+textarea{
+  background-color: var(--note-bg);
+  border: #202020 solid 2px;
+  color: #DDDDDD;
+}
+
+textarea:focus{
+  outline: none;
+}
+
+.EmptyNote button{
+  font-size: xx-large;
+  width: max-content;
+  padding: 8px;
+  border: none;
+  color:#DDDDDD;
+  border-radius: 10px;
+  background-color: var(--bg-color);
+}
+
+.EmptyNote button:active{
+  background-color: var(--sidebar-bg);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.EmptyNote button:hover{
+  background-color: var(--sidebar-bg);
 }
