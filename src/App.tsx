@@ -265,6 +265,7 @@ function NoteList() {
   }
 
   const handleMassDelete = () => {
+    massDelete && setCheckedItems([])
     setMassDelete(!massDelete)
   }
 
@@ -386,31 +387,40 @@ function NoteList() {
                 >
                   <AnimatePresence>
                   {massDelete &&
+                    <label style={{
+                      position: 'absolute',
+                      cursor: 'pointer',
+                      padding: '8px',
+                      left: 10,
+                    }}>
                     <motion.input
                       style={{
-                        position: 'absolute',
-                        left: 20,
-                        marginTop: 5
+                        position: 'relative',
+                        top: '1px',
                       }}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.2,delay: 0.05, ease: "easeInOut" }}
                       onChange={(e) => handleMassCheck(note.id, e.target.checked)}
-                      type='checkbox' />}
+                      type='checkbox' /></label>}
+                      
                     </AnimatePresence>
                   <motion.span
                     animate={{ x: massDelete ? 20 : 0 }}
                     transition={{ duration: 0.2, ease: "easeInOut" }}
+                    style={{width: '100%' ,display: 'inline'}}
                   >
                   {note.title}
+                      {!massDelete &&
                     <span
+                      style={{float:'right'}}
                       className='innerButton'
                       onClick={(e) => {
                         e.stopPropagation(); ask ? removeNote(note.id) : confirmDelete(note)
                       }
                       }> X
-                    </span>
+                    </span>}
                   </motion.span>
                 </motion.div>
               ))}
