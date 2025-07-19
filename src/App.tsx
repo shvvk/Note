@@ -33,7 +33,7 @@ const MovablePopup = ({ onClose, onConfirm, item, ask, toggleAsk }: ModalProps) 
   const [position, setPosition] = useState({ x: 600, y: 300 });
   const [isDragging, setIsDragging] = useState(false);
   const offset = useRef({ x: 0, y: 0 });
-  
+
   const handleMouseDown = (e: { clientX: number; clientY: number; }) => {
     setIsDragging(true);
     offset.current = {
@@ -54,31 +54,31 @@ const MovablePopup = ({ onClose, onConfirm, item, ask, toggleAsk }: ModalProps) 
 
   const handleMouseUp = () => {
     setIsDragging(false);
-    if(position.x < 0){
-      setPosition({x: 0, y: position.y})
+    if (position.x < 0) {
+      setPosition({ x: 0, y: position.y })
     }
-    if(position.y < 0){
-      setPosition({x: position.x, y: 0})
+    if (position.y < 0) {
+      setPosition({ x: position.x, y: 0 })
     }
   };
 
   return (
     item != null ?
       <motion.div
-        initial={{opacity:0}}
-        animate={{opacity:1}}
-        exit={{opacity:0}}
-        transition={{duration: 0.1, ease: "easeInOut"}}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.1, ease: "easeInOut" }}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        style={{ width: '240px', height: '100vh', color: '#DDDDDD'}}
+        style={{ width: '240px', height: '100vh', color: '#DDDDDD' }}
       >
         <div
-        className="modal-overlay"
+          className="modal-overlay"
           onMouseDown={handleMouseDown}
           style={{
-            
+
             position: 'absolute',
             top: position.y,
             left: position.x,
@@ -94,7 +94,7 @@ const MovablePopup = ({ onClose, onConfirm, item, ask, toggleAsk }: ModalProps) 
           <div className="modal-content">
             Are you sure you want to delete {item.title}?
             <label>
-              <input id="ask" checked={ask} onChange={toggleAsk} type="checkbox"/>
+              <input id="ask" checked={ask} onChange={toggleAsk} type="checkbox" />
               Don't ask again
             </label>
           </div>
@@ -104,7 +104,7 @@ const MovablePopup = ({ onClose, onConfirm, item, ask, toggleAsk }: ModalProps) 
           </div>
         </div>
       </motion.div> : null
-      
+
   );
 };
 
@@ -112,7 +112,7 @@ const Settings = ({ onClose, ask, toggleAsk }: SettingProps) => {
   const [position, setPosition] = useState({ x: 600, y: 300 });
   const [isDragging, setIsDragging] = useState(false);
   const offset = useRef({ x: 0, y: 0 });
-  
+
   const handleMouseDown = (e: { clientX: number; clientY: number; }) => {
     setIsDragging(true);
     offset.current = {
@@ -133,30 +133,30 @@ const Settings = ({ onClose, ask, toggleAsk }: SettingProps) => {
 
   const handleMouseUp = () => {
     setIsDragging(false);
-    if(position.x < 0){
-      setPosition({x: 0, y: position.y})
+    if (position.x < 0) {
+      setPosition({ x: 0, y: position.y })
     }
-    if(position.y < 0){
-      setPosition({x: position.x, y: 0})
+    if (position.y < 0) {
+      setPosition({ x: position.x, y: 0 })
     }
   };
 
   return (
     <motion.div
-      initial={{opacity:0}}
-      animate={{opacity:1}}
-      exit={{opacity:0}}
-      transition={{duration: 0.1, ease: "easeInOut"}}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.1, ease: "easeInOut" }}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
-      style={{ width: '240px', height: '500px', color: '#DDDDDD'}}
+      style={{ width: '240px', height: '500px', color: '#DDDDDD' }}
     >
       <div
-      className="modal-overlay"
+        className="modal-overlay"
         onMouseDown={handleMouseDown}
         style={{
-          
+
           position: 'absolute',
           top: position.y,
           left: position.x,
@@ -166,19 +166,19 @@ const Settings = ({ onClose, ask, toggleAsk }: SettingProps) => {
         }}
       >
         <div className="modal-title">
-          <p style={{float:'left', margin: "0px 0px 0px 15px", color: '#2a2a3a'}}>⚙</p>
+          <p style={{ float: 'left', margin: "0px 0px 0px 15px", color: '#2a2a3a' }}>⚙</p>
           Settings
           <button onClick={onClose}>X</button>
         </div>
         <div className="modal-content">
           <label>
-              <input id="ask" checked={ask} onChange={toggleAsk} type="checkbox"/>
-              Don't ask when deleting a note
+            <input id="ask" checked={ask} onChange={toggleAsk} type="checkbox" />
+            Don't ask when deleting a note
           </label>
         </div>
       </div>
     </motion.div>
-    
+
   );
 };
 
@@ -186,13 +186,13 @@ function Note({ note, updateTitle, updateData, sample }: NoteProps) {
 
   return (
     <div className="NoteContainer">
-    {!note ?
-      <div className="EmptyNote">
-        <h1>No notes open!</h1>
-        <h2>Open an exisiting note or make a new one by pressing Add a new note button</h2>
-        <button onClick={sample}>Press here to add example notes</button>
-      </div>
-      :
+      {!note ?
+        <div className="EmptyNote">
+          <h1>No notes open!</h1>
+          <h2>Open an exisiting note or make a new one by pressing Add a new note button</h2>
+          <button onClick={sample}>Press here to add example notes</button>
+        </div>
+        :
         <>
           <textarea
             className='Title'
@@ -203,8 +203,8 @@ function Note({ note, updateTitle, updateData, sample }: NoteProps) {
             onChange={(e) => updateData(note.id, e.target.value)}
             value={note.data} />
         </>
-          }
-      </div>
+      }
+    </div>
   );
 }
 
@@ -217,7 +217,7 @@ function Clock() {
   }, []);
 
   return (
-    <div style={{marginLeft:"auto", marginRight: "10px"}}>
+    <div style={{ marginLeft: "auto", marginRight: "10px" }}>
       {time.toLocaleTimeString('en-GB')} {/* HH:MM:SS format */}
     </div>
   );
@@ -226,13 +226,13 @@ function Clock() {
 function NoteList() {
   const [notes, setNotes] = useState<NoteType[]>(() => {
     const saved = localStorage.getItem("notes");
-    if(saved){
-    const value = JSON.parse(saved)
-    return value;
+    if (saved) {
+      const value = JSON.parse(saved)
+      return value;
     }
-    else{return []}
+    else { return [] }
   });
-
+  const [massDelete, setMassDelete] = useState(false);
   useEffect(() => {
     localStorage.setItem("notes", JSON.stringify(notes));
 
@@ -241,16 +241,16 @@ function NoteList() {
   useEffect(() => {
     localStorage.setItem("ask", JSON.stringify(ask));
 
-  }, );
+  },);
 
   const [currentId, setCurrentId] = useState<number>(0);
   const [ask, setAsk] = useState<boolean>(() => {
     const saved = localStorage.getItem("ask");
-    if(saved != undefined){
-    const value = JSON.parse(saved)
-    return value;
+    if (saved != undefined) {
+      const value = JSON.parse(saved)
+      return value;
     }
-    else{false}
+    else { false }
   });
   const [showSettings, setShowSettings] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -264,6 +264,9 @@ function NoteList() {
     setCurrentId(id)
   }
 
+  const handleMassDelete = () => {
+    setMassDelete(!massDelete)
+  }
 
   const scrollToBottom = () => {
     const el = listRef.current;
@@ -272,14 +275,14 @@ function NoteList() {
     }
   };
 
-  const handleSampleNotes = () =>{
+  const handleSampleNotes = () => {
     const newNote = {
       id: Date.now(),
       title: 'Example note 1',
       data: 'this is some sample text for note 1',
     };
     const newNote2 = {
-      id: Date.now()+1,
+      id: Date.now() + 1,
       title: 'Example note 2',
       data: 'Here is some more text in the note 2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur faucibus massa volutpat aliquam iaculis. Praesent ac sem tellus. Proin in porta justo, porttitor porttitor metus. Phasellus luctus erat ac lectus eleifend mollis. Etiam orci tortor, lobortis ut convallis nec, mattis ut purus. Nam venenatis augue dolor, quis tristique dolor dignissim in. Cras rutrum interdum urna non sollicitudin. Nulla nec hendrerit sapien. Nulla sit amet mi eu leo rhoncus porta. Aenean mi sem, porta quis libero et, tempor viverra ipsum. Cras posuere dolor at nunc gravida, dictum varius magna interdum. ',
     };
@@ -332,16 +335,34 @@ function NoteList() {
     setShowSettings(false);
   }
 
+  const [checkedItems, setCheckedItems] = useState<number[]>([]);
+
+  const handleMassCheck = (id: number, checked: boolean) => {
+    setCheckedItems((prev) =>
+      checked
+        ? [...prev, id]
+        : prev.filter((itemId) => itemId !== id)
+    );
+  };
+
+  const handleMassDeleteActually = () => {
+    setNotes((prevNotes) =>
+      prevNotes.filter(note => !checkedItems.includes(note.id))
+    );
+    setMassDelete(false);
+    setCheckedItems([]);
+  }
   return (
     <>
       <div className='AppContainer'>
         <div className='ListContainer'>
-          <div style={{fontSize:'24px', display:"flex"}}>
-            <div style={{cursor:'pointer', width: "36px"}} onClick={()=>setShowSettings(true)}>⚙</div>
-            <Clock/>
+          <div style={{ fontSize: '24px', display: "flex" }}>
+            <div style={{ cursor: 'pointer', width: "36px" }} onClick={() => setShowSettings(true)}>⚙</div>
+            <Clock />
           </div>
-          <h2 onClick={()=>setCurrentId(0)}>Notes</h2>
-          
+          <h2 onClick={() => setCurrentId(0)}>Notes</h2>
+          <button onClick={handleMassDelete}>massDelete</button>
+          <button onClick={handleMassDeleteActually}>killem</button>
           <motion.div layout initial={false} className="list-group" ref={listRef}>
             <AnimatePresence>
               {notes.map(note => (
@@ -349,44 +370,63 @@ function NoteList() {
                   layout
                   key={note.id}
                   variants={{
-                    hidden: { opacity: 0, x: -100},
-                    animate: { opacity: 1, x: 0},
+                    hidden: { opacity: 0, x: -100 },
+                    animate: { opacity: 1, x: 0 },
                   }}
                   initial="hidden"
                   animate="animate"
-                  exit={{ opacity: 0}}
-                  transition={{duration: 0.2, ease: "easeInOut"}}
-                  
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+
                   className={currentId === note.id ?
                     "NoteButtonSelected" :
                     "NoteButton"
-                  } 
+                  }
                   onClick={() => handleNoteChange(note.id)}
                 >
+                  <AnimatePresence>
+                  {massDelete &&
+                    <motion.input
+                      style={{
+                        position: 'absolute',
+                        left: 20,
+                        marginTop: 5
+                      }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2,delay: 0.05, ease: "easeInOut" }}
+                      onChange={(e) => handleMassCheck(note.id, e.target.checked)}
+                      type='checkbox' />}
+                    </AnimatePresence>
+                  <motion.span
+                    animate={{ x: massDelete ? 20 : 0 }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                  >
                   {note.title}
-                  <span
-                    className='innerButton'
-                    onClick={(e) => {
-                      e.stopPropagation(); ask ? removeNote(note.id) : confirmDelete(note)
-                    }
-                    }> X
-                  </span>
-
+                    <span
+                      className='innerButton'
+                      onClick={(e) => {
+                        e.stopPropagation(); ask ? removeNote(note.id) : confirmDelete(note)
+                      }
+                      }> X
+                    </span>
+                  </motion.span>
                 </motion.div>
               ))}
-              
+
               <motion.button
-              layout
-              type="button"
-              className="NoteButton"
-              transition={{duration: 0.2, ease: "easeInOut"}}
-              onClick={addNote}
-            >
-              + Add a new note +
-            </motion.button>
+                layout
+                type="button"
+                className="NoteButton"
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+                onClick={addNote}
+              >
+                + Add a new note +
+              </motion.button>
             </AnimatePresence>
           </motion.div>
-          
+
         </div>
         <Note
           note={current}
@@ -398,7 +438,7 @@ function NoteList() {
       {showConfirm && (
         <MovablePopup onClose={handleClose} onConfirm={removeNote} item={deleteId} ask={ask} toggleAsk={toggleAsk} />
       )}
-      {showSettings&&(
+      {showSettings && (
         <Settings onClose={closeSettings} ask={ask} toggleAsk={toggleAsk} />
       )}
     </>
